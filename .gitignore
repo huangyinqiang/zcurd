@@ -1,9 +1,33 @@
-# 不包含的文件类型 #
-/target/
 *.class
-*.log
 
-# eclipse配置文件 #
-/.settings/
-*.project
-*.classpath
+#package files
+
+*.war
+*.ear
+
+#kdiff3 ignore
+target/
+
+#eclipse ignore
+.settings/
+.project
+.classpath
+
+#idea
+.idea/
+/idea/
+*.ipr
+*.iml
+*.iws
+
+# temp file
+
+*.log
+*.cache
+*.diff
+*.patch
+*.tmp
+
+#system ignore
+.DS_Store
+Thumbs.db
