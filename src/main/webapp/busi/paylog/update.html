@@ -1,0 +1,99 @@
+
+<#include "/common/head.html"/>
+
+
+ <div class="easyui-panel updatePage" data-options="fit:true,border:false">
+    <form id="ff" class="easyui-form" method="post">
+        <table class="table1">
+            <tr>
+           		<th><span>代理ID：</span></th>
+               	<td>
+               		<div class="wrap_input"><input class="easyui-numberspinner" type="text" name="userid" id="userid" value="${model.userid!''}" data-options="fit: true,required:true"></input></div>
+           		</td>
+           		
+            <tr>
+           		<th><span>代理名称：</span></th>
+               	<td>
+               		<div class="wrap_input"><input class="easyui-textbox" type="text" name="username" id="username" value="${model.username!''}" data-options="fit: true,required:true"></input></div>
+           		</td>
+           		
+            </tr>
+            <tr>
+           		<th><span>查询开始日期：</span></th>
+               	<td>
+               		<div class="wrap_input"><input class="easyui-datebox" type="text" name="starttime" id="starttime" value="${model.starttime!''}" data-options="fit: true,required:true"></input></div>
+           		</td>
+           		
+            </tr>
+            <tr>
+           		<th><span>查询结束日期：</span></th>
+               	<td>
+               		<div class="wrap_input"><input class="easyui-datebox" type="text" name="endtime" id="endtime" value="${model.endtime!''}" data-options="fit: true,required:true"></input></div>
+           		</td>
+           		
+            </tr>
+            <tr>
+           		<th><span>记录日期：</span></th>
+               	<td>
+               		<div class="wrap_input"><input class="easyui-datebox" type="text" name="jointime" id="jointime" value="${model.jointime!''}" data-options="fit: true,required:true"></input></div>
+           		</td>
+           		
+            </tr>
+            <tr>
+           		<th><span>状态0 未成功 1 成功：</span></th>
+               	<td>
+               		<div class="wrap_input"><input class="easyui-numberspinner" type="text" name="status" id="status" value="${model.status!''}" data-options="fit: true"></input></div>
+           		</td>
+           		
+            </tr>
+            <tr>
+           		<th><span>付款金额：</span></th>
+               	<td>
+               		<div class="wrap_input"><input class="easyui-textbox" type="text" name="money" id="money" value="${model.money!''}" data-options="fit: true,required:true"></input></div>
+           		</td>
+           		
+            </tr>
+            <tr>
+           		<th><span>费用类型：</span></th>
+               	<td>
+               		<div class="wrap_input"><input class="easyui-textbox" type="text" name="type" id="type" value="${model.type!''}" data-options="fit: true,required:true"></input></div>
+           		</td>
+           		
+            </tr>
+        </table>
+    </form>
+</div>
+<script>
+top.window.subPage.save = save;
+function save() {
+	if($("#zcurdHeadTable").form('validate')) {
+		$.post("update", getParam(), function(data) {
+			top.window.closeWindow();
+			top.window.subPage.loadCurrDatagrid();
+		});
+	}
+}
+function getParam() {
+	var param = {
+	     
+	    "id": ${model.id}, 
+       	    "model.userid": getInputValue("userid"), 
+       	    "model.username": getInputValue("username"), 
+       	    "model.starttime": getInputValue("starttime"), 
+       	    "model.endtime": getInputValue("endtime"), 
+       	    "model.jointime": getInputValue("jointime"), 
+       	    "model.status": getInputValue("status"), 
+       	    "model.money": getInputValue("money"), 
+       	    "model.type": getInputValue("type"), 
+	}
+	for(key in param) {
+		if(!param[key]) {
+			delete param[key];
+		}
+	}
+	return param;
+}
+
+//扩展js
+</script>
+<#include "/common/foot.html"/>

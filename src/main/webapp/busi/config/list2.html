@@ -1,0 +1,174 @@
+<#include "/common/head.html"/>
+<script type="text/javascript"
+	src="http://127.0.0.1:8008/YOWOCloudRFIDReader.js"></script>
+<script type="text/javascript"
+	src="${basePath}/res/js/YOWOReaderBase.js"></script>
+<script type="text/javascript" src="${basePath}/res/js/list2.js"></script>
+<table id="dg"></table>
+<div id="tb" style="padding: 2px 5px;">
+	<div style="text-align: left; margin: 6px;">
+		<a href="javascript:void(0)" class="easyui-linkbutton updateBtn"
+			iconCls="glyphicon-pencil" plain="true" onclick="update()">修改秘钥配置</a>
+	</div>
+</div>
+<div id="tb1"
+	style="padding: 2px 50px; margin-top: 0px; border-top: 2px solid #DDDDDD; font-size: 18px;">
+	<div id="main" style="width: 880px; height: 400px; margin-left: 50px;"
+		style="float:right;">
+		<div id="initsys">
+			<h2>以下为用户卡开卡-充值金额步骤1（代理商专用），请遵照以下步骤进行操作</h2>
+			<a href="javascript:void(0)" class="easyui-linkbutton"
+				style="border: 1px solid #DDDDDD; fon-size: 18px; margin-top: 20px;"
+				plain="true" onclick="WriteBlock()">1.初始化电卡为用户卡: <span
+				style="color: red;">(第一步点击初始化电卡为用户卡，也就是制卡为公司所属用户的卡)</span></a><br /> <a
+				href="javascript:void(0)" class="easyui-linkbutton"
+				style="border: 1px solid #DDDDDD; fon-size: 18px; margin-top: 20px;"
+				plain="true" onclick="WriteBlockNum()">2.初始化电卡金额: <span
+				style="color: red;">(第二步点击初始化电卡金额之前先在下面的红框中输入对应的金额，然后点击初始化电卡金额，这样就把金额写入所属用户的电卡中)</span></a><br />
+			<a href="javascript:void(0)" class="easyui-linkbutton"
+				style="border: 1px solid #DDDDDD; fon-size: 18px; margin-top: 20px;"
+				plain="true" onclick="ReadBlockNum()">3.读取电卡金额: <span
+				style="color: red;">
+					(第三步点击读取电卡金额，进行电卡金额校验，校验卡初始化是否正确，读取的电卡金额显示在下面绿框中)</span></a>
+			<div
+				style="border: 1px solid #DDDDDD; margin-top: 16px; margin-bottom: 8px;">
+				输入首次初始化电卡金额：<input type="text" name="cardnum" id="cardnum"
+					value="99.99" style="border: 2px solid red; margin-bottom: 3px;"></input>金额为五位有效数字，默认为000.00,请正确输入</br>
+				显示读取出来的电卡金额：<input type="text" name="cardnum1" id="cardnum1"
+					style="border: 2px solid green;" readonly="readonly"></input>金额为五位有效数字，默认为000.00,请正确校验
+			</div>
+		</div>
+		<div id="initempty">
+			<a href="javascript:void(0)" class="easyui-linkbutton"
+				style="border: 1px solid #DDDDDD; fon-size: 18px; margin-top: 10px;"
+				plain="true" onclick="WriteEmptyBlock()">!!!.初始化用户电卡为用户空卡:<span
+				style="color: red;"> (开卡失败或者写入卡金额错误情况下使用)</span>
+			</a>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	var datagrid = $("#dg");
+	var dgOptions = {
+		rownumbers : true,
+		fit : false,
+		border : false,
+		rownumbers : true,
+		url : 'listData',
+		method : 'post',
+		toolbar : '#tb',
+		singleSelect : true,
+		height : 300,
+		pageSize : 10,
+		pagination : true,
+		multiSort : true,
+		queryParams : getInitParam(),
+		columns : [ [ {
+			field : 'id',
+			checkbox : true
+		}, {
+			field : 'gname',
+			title : '代理名称',
+			width : 120,
+			sortable : true
+		}, {
+			field : 'keyb1value',
+			title : '用户秘钥A',
+			width : 120,
+			sortable : true
+		}, {
+			field : 'keyb2value',
+			title : '用户秘钥B',
+			width : 120,
+			sortable : true
+		}, {
+			field : 'controlvalue',
+			title : '控制秘钥',
+			width : 100,
+			sortable : true
+		}, {
+			field : 'remark',
+			title : '秘钥说明',
+			width : 210,
+			sortable : true
+		} ] ]
+	};
+	$(function() {
+		handleAuthDataRule();
+		datagrid.datagrid(dgOptions);
+	});
+
+	function zcurdSearch() {
+		var param = zcurdGetParam();
+		datagrid.datagrid("load", {
+			queryParams : param
+		})
+	}
+
+	function zcurdGetParam() {
+		var param = {};
+		$("#tb :input[name]").each(function(i, item) {
+			if ($(item).val()) {
+				param[$(item).attr("name")] = $(item).val();
+			}
+		});
+		return param;
+	}
+
+	function getInitParam() {
+		var param = {};
+		$("#tb :input[name]").each(
+				function(i, item) {
+					if ($(item).val()) {
+						param["queryParams[" + $(item).attr("name") + "]"] = $(
+								item).val();
+					}
+				});
+		return param;
+	}
+	var initPara = zcurdGetParam();
+	function update() {
+		var rowsSel = datagrid.datagrid("getSelections");
+		if (rowsSel.length != 1) {
+			showWarnMsg("请选择要编辑的数据！");
+			return;
+		}
+		var id = rowsSel[0].id;
+		top.window.subPage.loadCurrDatagrid = function() {
+			showMsg("更新成功");
+			datagrid.datagrid("reload");
+		}
+		top.openWindow("秘钥配置-编辑", getCurrUrl("updatePage") + "?id=" + id, {
+			size : '600x400'
+		});
+	}
+
+	function exportCsv() {
+		var option = datagrid.datagrid("options");
+		var param = option.queryParams;
+		param.sortName = option.sortName;
+		param.sortOrder = option.sortOrder;
+		window.location.href = "exportCsv?" + $.param(param);
+	}
+
+	//按钮事件
+
+	/**
+	 * 打开子页
+	 */
+	var _openSubPageFlag = false;
+	function _openSubPage(pageUrl) {
+		if (!_openSubPageFlag) {
+			$("#subLayout").layout("expand", "east");
+			setTimeout(function() {
+				$("#subIframe").attr("src", pageUrl);
+			}, 600);
+			_openSubPageFlag = true;
+		} else {
+			$("#subIframe").attr("src", pageUrl);
+		}
+	}
+
+	//扩展js
+</script>
+<#include "/common/dialogWindow.html"/> <#include "/common/foot.html"/>

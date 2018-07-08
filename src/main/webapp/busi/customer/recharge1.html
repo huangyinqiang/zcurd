@@ -1,0 +1,174 @@
+<#include "/common/head.html"/>
+<script type="text/javascript"
+	src="http://127.0.0.1:8008/YOWOCloudRFIDReader.js"></script>
+<script type="text/javascript"
+	src="${basePath}/res/js/YOWOReaderBase.js"></script>
+<script language="javascript" type="text/javascript">
+	rfidreader.onResult(function(resultdata) {
+				switch (resultdata.FunctionID) {
+				case 14:
+					break;
+				case 5:
+					if (resultdata.Result > 0) {
+						var tempStr = resultdata.strData;
+						tempStr = tempStr.substring(0, 6);
+						var dresult = parseInt(tempStr, 16);
+						var dFloat = parseFloat(dresult) / 100;
+						$("#cardcs").val(+dFloat);
+					} else {
+						document.getElementById("cardcs").value = GetErrStr(resultdata.Result);
+					}
+					break;
+				case 6:
+					if (resultdata.Result > 0) {
+						closeDialog();
+					} else {
+						alert("充值失败，错误：" + GetErrStr(resultdata.Result));
+					}
+					break;
+				}
+			});
+	</script>
+<div class="easyui-panel updatePage"
+	data-options="fit:true,border:false">
+	<form id="ff" class="easyui-form" method="post">
+		<table class="table1">
+			<tr>
+				<th><span>用户名1:</span></th>
+				<td>
+					<div class="wrap_input">
+						<input class="easyui-textbox" type="text" name="name" id="name"
+							value="${model.name!''}" data-options="fit: true,required:true"
+							readonly="readonly"></input>
+					</div>
+				</td>
+			<tr>
+				<th><span>手机号:</span></th>
+				<td>
+					<div class="wrap_input">
+						<input class="easyui-textbox" type="text" name="phone" id="phone"
+							value="${model.phone!''}" data-options="fit: true,required:true"
+							readonly="readonly"></input>
+					</div>
+				</td>
+
+			</tr>
+			<tr>
+				<th><span>卡号:</span></th>
+				<td>
+					<div class="wrap_input">
+						<input class="easyui-textbox" type="text" name="cardnum"
+							id="cardnum" value="${model.cardnum!''}" data-options="fit: true"
+							readonly="readonly"></input>
+					</div>
+				</td>
+
+			</tr>
+			<tr>
+				<th><span><input class="easyui-linkbutton addBtn"
+						type="button" value="读取卡金额" onclick="ReadBlock1()"></span></th>
+				<td>
+					<div class="wrap_input">
+						<input type="text" name="cardcs" id="cardcs"
+							placeholder="点击读取卡金额获取" data-options="fit: true,required:true"
+							readonly="readonly"></input>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<th><span>充值金额:</span></th>
+				<td>
+					<div class="wrap_input">
+						<input type="text" class="easyui-numberspinner" name="chargenum"
+							id="chargenum" value="300.00" precision="2" increment="0.1"
+							data-options="fit: true,precision:2,increment:0.1,required:true"
+							style="width: 120px;"></input>
+					</div>
+				</td>
+
+			</tr>
+			<tr>
+				<th><span>本次收费:</span></th>
+				<td>
+					<div class="wrap_input">
+						<input class="easyui-numberspinner" name="money" id="money"
+							name="money" value="100"
+							data-options="fit: true,increment:30,required:true"
+							style="width: 120px;"></input>
+					</div>
+				</td>
+			</tr>
+		</table>
+	</form>
+</div>
+<script>
+top.window.subPage.save = save;
+function save() {
+	if ($("#ff").form('enableValidation').form('validate')) {
+		var icardcs = document.getElementById("cardcs").value;
+		if(icardcs==""){
+			alert("请点击获取卡金额");						
+			return;
+		}
+		$.post("charge1", getParam(), function(data) {
+			if(data.result=="success"){
+				chargenum = document.getElementById("chargenum").value;
+				var total = parseFloat(icardcs) + parseFloat(chargenum);
+				total = total*100;
+				tempCount = total.toString();
+				var strTmp = "0";
+				var intCount = parseInt(tempCount);
+				var tempStr = intCount.toString(16);
+				var tmpCount = 6 - tempStr.length;
+				if (tmpCount > 0) {
+					for (var i = 1; i < tmpCount; i++) {
+						strTmp += "0";
+					}
+					tempStr = strTmp + tempStr;
+				}
+				tempStr = tempStr + "00000000000000000000000000";
+				if(!isNaN(total)&&total>=1&&total<=99999){
+					rfidreader.KeyMode=1;
+					rfidreader.KeyStringMode=0;
+					rfidreader.KeyString="${config}";
+					rfidreader.Repeat=0;
+					rfidreader.M1WriteBlock(8,tempStr,0);
+				}else{
+					alert("充值金额和卡内金额数值填写错误");
+				}
+			}
+		});
+	}
+}
+function closeDialog(){
+	top.window.closeWindow();
+	top.window.subPage.loadCurrDatagrid();
+}
+function getParam() {
+	var param = {
+	    	"id": ${model.id}, 
+       	    "model.name": getInputValue("name"), 
+       	    "model.phone": getInputValue("phone"), 
+       	    "model.cardnum": getInputValue("cardnum"), 
+       	    "model.cardcs": getInputValue("cardcs"), 
+       	    "model.chargenum": getInputValue("chargenum"), 
+       	    "model.money": getInputValue("money"), 
+	}
+	for(key in param) {
+		if(!param[key]) {
+			delete param[key];
+		}
+	}
+	return param;
+}
+function ReadBlock1() {
+	var BlockID = 8;
+	var Key="${config}";
+	rfidreader.KeyMode = 1;
+	rfidreader.KeyStringMode = 0;
+	rfidreader.KeyString = Key;
+	rfidreader.Repeat = 0
+	rfidreader.M1ReadBlock(BlockID, 0);
+}
+</script>
+<#include "/common/foot.html"/>

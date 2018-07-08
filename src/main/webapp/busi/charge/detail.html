@@ -1,0 +1,51 @@
+
+<#include "/common/head.html"/>
+
+
+ <div class="easyui-panel detailPage" data-options="fit:true,border:false">
+    <form id="ff" class="easyui-form" method="post">
+        <table class="table1">
+            <tr>
+           		<th><span>用户名称：</span></th>
+               	<td><span class="valueSpan"><pre>${model.name!''}</pre></span></td>
+            <tr>
+           		<th><span>手机号：</span></th>
+               	<td><span class="valueSpan"><pre>${model.phone!''}</pre></span></td>
+            </tr>
+            <tr>
+           		<th><span>卡号：</span></th>
+               	<td><span class="valueSpan"><pre>${model.cardnum!''}</pre></span></td>
+            </tr>
+            <tr>
+           		<th><span>卡次数：</span></th>
+               	<td><span class="valueSpan"><pre>${model.cardcs!''}</pre></span></td>
+            </tr>
+            <tr>
+           		<th><span>充值次数：</span></th>
+               	<td><span class="valueSpan"><pre>${model.chargenum!''}</pre></span></td>
+            </tr>
+            <tr>
+           		<th><span>消费金额：</span></th>
+               	<td><span class="valueSpan"><pre>${model.money!''}</pre></span></td>
+            </tr>
+            <tr>
+           		<th><span>总共次数：</span></th>
+               	<td><span class="valueSpan"><pre>${model.total!''}</pre></span></td>
+            </tr>
+            <tr>
+           		<th><span>充卡时间：</span></th>
+               	<td><span class="valueSpan"><pre>${model.jointime!''}</pre></span></td>
+            </tr>
+           	
+        </table>
+    </form>
+</div>
+<script>
+top.window.subPage.save = save;
+function save() {
+	top.window.closeWindow();
+}
+
+//扩展js
+</script>
+<#include "/common/foot.html"/>

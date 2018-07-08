@@ -1,0 +1,16 @@
+﻿devMode = true
+server_url = http://plws.comhenankejue.com/
+base_jdbcUrl = jdbc:mysql://127.0.0.1:3306/zcurd_base?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useUnicode=true&relaxAutoCommit=true&useSSL=false&serverTimezone=GMT%2B8
+base_user = root
+base_password = testtest
+
+busi_jdbcUrl = jdbc:mysql://127.0.0.1:3306/zcurd_busi?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useUnicode=true&relaxAutoCommit=true&useSSL=false&serverTimezone=GMT%2B8
+busi_user = root
+busi_password = testtest
+
+weixin.sender = DeviceMessage_xa
+mq.address = failover://(tcp://127.0.0.1:61616)?initialReconnectDelay=1000
+
+
+#代码生成保存地址
+genCodePath = /genCode/

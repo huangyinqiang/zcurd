@@ -1,0 +1,117 @@
+ <#include "/common/head.html"/>
+<script type="text/javascript"
+	src="http://127.0.0.1:8008/YOWOCloudRFIDReader.js"></script>
+<script type="text/javascript"
+	src="${basePath}/res/js/YOWOReaderBase.js"></script>
+<script language="javascript" type="text/javascript">
+	rfidreader.onResult(function(resultdata) {
+		switch (resultdata.FunctionID) {
+		case 14:
+			//document.getElementById("CloudReaderVer").value = resultdata.strData;
+			break;
+		case 5:
+			//document.getElementById("CardNo").value = resultdata.CardNo;
+			if (resultdata.Result > 0) {
+				var tmp = resultdata.strData;
+				tmp = tmp.substring(0, 10);
+				$("#cardnum").val(tmp);
+			} else {
+				alert(GetErrStr(resultdata.Result));
+				//document.getElementById("DataRead").value = GetErrStr(resultdata.Result);
+			}
+			break;
+		case 6:
+			document.getElementById("CardNo").value = resultdata.CardNo;
+			if (resultdata.Result > 0) {
+				alert("写入成功：" + resultdata.strData);
+			} else {
+				alert("写入失败：" + GetErrStr(resultdata.Result));
+			}
+			break;
+		}
+	});
+</script>
+<div class="easyui-panel addPage"
+	data-options="fit:true,border:false,novalidate:true">
+	<form class="easyui-form" id="ff" method="post"
+		data-options="novalidate:true">
+		<table class="table1">
+			<tr>
+				<th><span>用户名:</span></th>
+				<td>
+					<div class="wrap_input">
+						<input class="easyui-textbox" type="text" name="name" id="name"
+							value="" data-options="fit: true,required:true"></input>
+					</div>
+				</td>
+			<tr>
+				<th><span>手机号:</span></th>
+				<td>
+					<div class="wrap_input">
+						<input class="easyui-textbox" type="text" name="phone" id="phone"
+							value="" data-options="fit: true,required:true"></input>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<th><span>住址:</span></th>
+				<td>
+					<div class="wrap_input">
+						<input class="easyui-textbox" type="text" name="address"
+							id="address" value="" data-options="fit: true"></input>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<th><span><input class="easyui-linkbutton addBtn"
+						type="button" value="读取卡号" onclick="ReadBlock()"></span></th>
+				<td>
+					<div class="wrap_input">
+						<input type="text" name="cardnum" id="cardnum"
+							placeholder="请把卡片放在读卡器上，点击读卡获取卡号"
+							data-options="fit: true,required:true" readonly="readonly"></input>
+					</div>
+				</td>
+			</tr>
+		</table>
+	</form>
+</div>
+<script>
+	top.window.subPage.save = save;
+	function save() {
+		if ($("#ff").form('enableValidation').form('validate')) {
+			$.post("add", getParam(), function(data) {
+				top.window.closeWindow();
+				top.window.subPage.loadCurrDatagrid();
+			});
+		}
+	}
+	function getParam() {
+		var param = {
+			"model.name" : $(":input[name='name']").val(),
+			"model.phone" : $(":input[name='phone']").val(),
+			"model.address" : $(":input[name='address']").val(),
+			"model.cardnum" : $(":input[name='cardnum']").val(),
+		}
+		for (key in param) {
+			if (!param[key]) {
+				delete param[key];
+			}
+		}
+		return param;
+	}
+
+	function ReadBlock() {
+		var BlockID = 1;
+		var Key = "B532343339F7";
+		//BlockID = document.getElementById("BlockIDRead").value;
+		//Key = document.getElementById("KeyRead").value;
+		rfidreader.KeyMode = 0;
+		rfidreader.KeyStringMode = 0;
+		rfidreader.KeyString = Key;
+		rfidreader.Repeat = 0
+		rfidreader.M1ReadBlock(BlockID, 1);
+	}
+	//扩展js
+</script>
+<#include "/common/foot.html"/>

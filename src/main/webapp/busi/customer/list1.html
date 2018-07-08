@@ -1,0 +1,207 @@
+
+<#include "/common/head.html"/>
+    
+    <table id="dg"></table>
+    <div id="tb" style="padding:2px 5px;">
+        <div class="wrap_search">
+			            	<span class="search_item">
+				            	<span class="item_text">用户名: </span>
+				            	<span class="item_obj">
+				            		<input class="easyui-textbox" type="text" name="name" id="name" value=""/>
+				            	</span>    
+				            </span>
+		        		
+			            	<span class="search_item">
+				            	<span class="item_text">手机号: </span>
+				            	<span class="item_obj">
+				            		<input class="easyui-textbox" type="text" name="phone" id="phone" value=""/>
+				            	</span>    
+				            </span>
+		        		
+			            	<span class="search_item">
+				            	<span class="item_text">卡号: </span>
+				            	<span class="item_obj">
+				            		<input class="easyui-textbox" type="text" name="cardnum" id="cardnum" value=""/>
+				            	</span>    
+				            </span>
+				            <div id="searchBtnWrap" style="float:right; padding-right:40px;">
+                <a href="javascript:void(0)" class="easyui-linkbutton color1" iconCls="glyphicon-search" onclick="zcurdSearch(this)">搜索</a>
+                <a href="javascript:void(0)" class="easyui-linkbutton color2" iconCls="glyphicon-repeat" onclick="flushPage()">重置</a>
+            </div>
+        </div>
+        <div style="text-align: left; margin:6px;">
+            <a href="javascript:void(0)" class="easyui-linkbutton addBtn" iconCls="glyphicon-plus" plain="true" onclick="add()">添加用户</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton delBtn" iconCls="glyphicon-road" plain="true" onclick="recharge()">卡片充值</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton delBtn" iconCls="glyphicon-inbox" plain="true" onclick="lostcard()">卡片挂失</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton updateBtn" iconCls="glyphicon-pencil" plain="true" onclick="update()">编辑用户</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton delBtn" iconCls="glyphicon-remove" plain="true" onclick="del()">删除用户</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton exportBtn" iconCls="glyphicon-export" plain="true" onclick="exportCsv()">导出</a>
+            
+        </div>
+    </div>
+    
+
+<script type="text/javascript">
+var datagrid = $("#dg");
+
+var dgOptions = {
+        rownumbers:true,
+    	fit:true,
+    	border:false,
+        rownumbers:true,
+    	url:'listData',
+    	method:'post',
+    	toolbar:'#tb',
+    	pageSize: 50,
+    	singleSelect: true,
+    	pagination:true,
+    	multiSort:true,
+        queryParams: getInitParam(),
+        columns: [[
+		         {field:'id', checkbox:true}
+	           	 ,{field:'gname', title: '代理名称', width:120, sortable: true}
+	           	 ,{field:'name', title: '用户名', width:120, sortable: true}
+	           	 ,{field:'phone', title: '手机号', width:120, sortable: true}
+	           	 ,{field:'cardnum', title: '卡号', width:120, sortable: true}
+	           	 ,{field:'address', title: '住址', width:250, sortable: true}
+	           	 ,{field:'total', title: '剩余金额', width:120, sortable: false}
+	           ]]
+	};
+$(function() {
+	handleAuthDataRule();
+	datagrid.datagrid(dgOptions);
+});
+
+function zcurdSearch() {
+	var param = zcurdGetParam();
+	datagrid.datagrid("load", {
+		queryParams: param
+	})
+}
+
+function zcurdGetParam() {
+	var param = {};
+	$("#tb :input[name]").each(function(i, item) {
+		if($(item).val()) {
+			param[$(item).attr("name")] = $(item).val();	
+		}
+	});
+	return param;
+}
+
+function getInitParam() {
+	var param = {};
+	$("#tb :input[name]").each(function(i, item) {
+		if($(item).val()) {
+			param["queryParams[" + $(item).attr("name") + "]"] = $(item).val();	
+		}
+	});
+	return param;
+}
+
+var initPara = zcurdGetParam();
+function add() {
+	top.window.subPage.loadCurrDatagrid = function() {
+		showMsg("添加成功");
+		datagrid.datagrid("load");
+	}
+	top.openWindow("物业用户卡信息-增加", getCurrUrl("addPage") + "?" + $.param(initPara), {size: '600x400'});
+}
+function lostcard(){
+	var rowsSel = datagrid.datagrid("getSelections");
+	if(rowsSel.length != 1) {
+		showWarnMsg("请选择要编辑的数据！");
+		return;
+	}
+	var id = rowsSel[0].id;
+	top.window.subPage.loadCurrDatagrid = function() {
+		showMsg("修改成功");
+		datagrid.datagrid("reload");
+	}
+	top.openWindow("物业用户卡信息-挂失", getCurrUrl("lostPage") + "?id=" + id, {size: '600x400'});
+}
+function update() {
+	var rowsSel = datagrid.datagrid("getSelections");
+	if(rowsSel.length != 1) {
+		showWarnMsg("请选择要编辑的数据！");
+		return;
+	}
+	var id = rowsSel[0].id;
+	top.window.subPage.loadCurrDatagrid = function() {
+		showMsg("修改成功");
+		datagrid.datagrid("reload");
+	}
+	top.openWindow("物业用户卡信息-编辑", getCurrUrl("updatePage") + "?id=" + id, {size: '600x400'});
+}
+function recharge() {
+	var rowsSel = datagrid.datagrid("getSelections");
+	if(rowsSel.length != 1) {
+		showWarnMsg("请选择要编辑的数据！");
+		return;
+	}
+	var id = rowsSel[0].id;
+	top.window.subPage.loadCurrDatagrid = function() {
+		showMsg("充值成功");
+		datagrid.datagrid("reload");
+	}
+	top.openWindow("用户卡信息-充值", getCurrUrl("updateCharge1") + "?id=" + id, {size: '600x500'});
+}
+
+function del() {
+	var ids = [];
+	$.each(datagrid.datagrid("getSelections"), function(i, item) {
+		ids.push(item.id);
+	});
+	if(ids.length < 1) {
+		showWarnMsg("请选择要删除的数据");
+		return;
+	}
+	confirmMsg("确认删除", function() {
+		$.post("delete", {id: ids}, function(data) {
+			showMsg("删除成功");
+			datagrid.datagrid("reload");
+		});
+	});
+}
+
+function detail() {
+	var rowsSel = datagrid.datagrid("getSelections");
+	if(rowsSel.length != 1) {
+		showWarnMsg("请选择要查看的数据！");
+		return;
+	}
+	var id = rowsSel[0].id;
+	top.openWindow("物业用户卡信息-详情", getCurrUrl("detailPage") + "?id=" + id, {size: '600x400'});
+}
+
+function exportCsv() {
+	var option = datagrid.datagrid("options");
+	var param = option.queryParams;
+	param.sortName = option.sortName;
+	param.sortOrder = option.sortOrder;
+	window.location.href = "exportCsv?" + $.param(param);
+}
+
+//按钮事件
+
+/**
+ * 打开子页
+ */
+var _openSubPageFlag = false;
+function _openSubPage(pageUrl) {
+	if(!_openSubPageFlag) {
+		$("#subLayout").layout("expand", "east");
+		setTimeout(function() {
+			$("#subIframe").attr("src", pageUrl);
+		}, 600);
+		_openSubPageFlag = true;
+	}else {
+		$("#subIframe").attr("src", pageUrl);
+	}
+}
+
+//扩展js
+</script>
+
+<#include "/common/dialogWindow.html"/>
+<#include "/common/foot.html"/>

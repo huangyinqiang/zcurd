@@ -1,0 +1,112 @@
+<#include "/common/head.html"/>
+<script type="text/javascript" src="http://127.0.0.1:8008/YOWOCloudRFIDReader.js"></script>
+<script type="text/javascript" src="${basePath}/res/js/YOWOReaderBase.js"></script>
+<script language="javascript" type="text/javascript">
+rfidreader.onResult(function(resultdata)
+		{
+			switch(resultdata.FunctionID)
+		    {
+				case 14:
+		        document.getElementById("CloudReaderVer").value = resultdata.strData;
+		        break;
+
+				case 6:
+				document.getElementById("CardNo").value = resultdata.CardNo;
+				if(resultdata.Result>0)
+				{
+					alert("密钥修改成功");
+				}
+				else
+				{
+					alert("密钥修改失败，错误：" + GetErrStr(resultdata.Result));	
+				}
+				break;
+		    }
+		}
+		);
+		function WriteBlock()
+		{
+			var BlockID=1*4+3;
+			var Key = "FFFFFFFFFFFF";
+			var Data;
+			Data =document.getElementById("keyA").value + "FF078069" + document.getElementById("keyB").value;
+			rfidreader.KeyMode=0;
+			rfidreader.KeyStringMode=0;
+			rfidreader.KeyString=Key;
+			rfidreader.Repeat=0
+			rfidreader.M1WriteBlock(BlockID, Data,0);	
+		}
+		function WriteEmptyBlock()
+		{
+			var BlockID=1*4+3;
+			var Key = "FFFFFFFFFFFF";
+			var Data;
+			Key =document.getElementById("keyA").value;
+			Data = "FFFFFFFFFFFF"+"FF078069" +"FFFFFFFFFFFF";
+			alert(Data);
+			rfidreader.KeyMode=0;
+			rfidreader.KeyStringMode=0;
+			rfidreader.KeyString=Key;
+			rfidreader.Repeat=0
+			rfidreader.M1WriteBlock(BlockID, Data,0);	
+		}
+</script>
+ <div class="easyui-panel detailPage" style="margin-top:50px;" data-options="fit:true,border:false">
+    <form id="ff" class="easyui-form" method="post">
+        <table class="table1">
+            <tr style="display:none;">
+           		<th><span>秘钥A名称:</span></th>
+               	<td>
+               	<span class="valueSpan"><pre>${model[0].key!''}</pre></span>
+               	</td>
+            </tr>
+            <tr>
+           		<th><span>秘钥A数值:</span></th>
+               	<td>
+               	<div class="wrap_input"><input class="easyui-textbox" type="text" name="keyA" id="keyA" value="${model[0].value!''}" readonly="readonly"></input>
+               	</td>
+            </tr>
+            <tr style="display:none;">
+           		<th><span>秘钥B名称:</span></th>
+               	<td><span class="valueSpan"><pre>${model[1].key!''}</pre></span></td>
+            <tr>
+           		<th><span>秘钥B数值:</span></th>
+               	<td>
+               	<div class="wrap_input"><input class="easyui-textbox" type="text" name="keyB" id="keyB" value="${model[1].value!''}" readonly="readonly"></input>
+               	</td>
+               	
+            </tr>
+            <tr style="display:none;">
+           		<th><span>间隔时长(秒):</span></th>
+               	<td>
+               		<div class="wrap_input"><input class="easyui-textbox" type="text" name="time" id="time" value="5" maxlength="1"></input></div>
+               	</td>
+            </tr>
+            <tr>
+           		<th><span>操作:</span></th>
+               	<td>
+               	<div class="wrap_input">
+               	<input class="easyui-linkbutton" type="button" name="value" id="value" value="初始为内部卡"  onclick="WriteBlock()"></input>
+               	<input class="easyui-linkbutton" type="button" name="value" id="value" value="初始为空卡"  onclick="WriteEmptyBlock()"></input>
+               	</div>
+               	</td>
+            </tr>
+        </table>
+    </form>
+    
+</div>
+<script>
+top.window.subPage.save = save;
+function save() {
+	top.window.closeWindow();
+}
+function initStart(){
+	
+}
+function initStop(){
+	
+}
+
+//扩展js
+</script>
+<#include "/common/foot.html"/>

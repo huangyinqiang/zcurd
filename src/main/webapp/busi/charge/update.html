@@ -1,0 +1,98 @@
+
+<#include "/common/head.html"/>
+
+
+ <div class="easyui-panel updatePage" data-options="fit:true,border:false">
+    <form id="ff" class="easyui-form" method="post">
+        <table class="table1">
+            <tr>
+           		<th><span>用户名称：</span></th>
+               	<td>
+               		<div class="wrap_input"><input class="easyui-textbox" type="text" name="name" id="name" value="${model.name!''}" data-options="fit: true"></input></div>
+           		</td>
+           		
+            <tr>
+           		<th><span>手机号：</span></th>
+               	<td>
+               		<div class="wrap_input"><input class="easyui-textbox" type="text" name="phone" id="phone" value="${model.phone!''}" data-options="fit: true"></input></div>
+           		</td>
+           		
+            </tr>
+            <tr>
+           		<th><span>卡号：</span></th>
+               	<td>
+               		<div class="wrap_input"><input class="easyui-textbox" type="text" name="cardnum" id="cardnum" value="${model.cardnum!''}" data-options="fit: true"></input></div>
+           		</td>
+           		
+            </tr>
+            <tr>
+           		<th><span>卡次数：</span></th>
+               	<td>
+               		<div class="wrap_input"><input class="easyui-textbox" type="text" name="cardcs" id="cardcs" value="${model.cardcs!''}" data-options="fit: true"></input></div>
+           		</td>
+           		
+            </tr>
+            <tr>
+           		<th><span>充值次数：</span></th>
+               	<td>
+               		<div class="wrap_input"><input class="easyui-textbox" type="text" name="chargenum" id="chargenum" value="${model.chargenum!''}" data-options="fit: true"></input></div>
+           		</td>
+           		
+            </tr>
+            <tr>
+           		<th><span>消费金额：</span></th>
+               	<td>
+               		<div class="wrap_input"><input class="easyui-textbox" type="text" name="money" id="money" value="${model.money!''}" data-options="fit: true"></input></div>
+           		</td>
+           		
+            </tr>
+            <tr>
+           		<th><span>总共次数：</span></th>
+               	<td>
+               		<div class="wrap_input"><input class="easyui-textbox" type="text" name="total" id="total" value="${model.total!''}" data-options="fit: true"></input></div>
+           		</td>
+           		
+            </tr>
+            <tr>
+           		<th><span>充卡时间：</span></th>
+               	<td>
+               		<div class="wrap_input"><input class="easyui-datebox" type="text" name="jointime" id="jointime" value="${model.jointime!''}" data-options="fit: true"></input></div>
+           		</td>
+           		
+            </tr>
+        </table>
+    </form>
+</div>
+<script>
+top.window.subPage.save = save;
+function save() {
+	if($("#zcurdHeadTable").form('validate')) {
+		$.post("update", getParam(), function(data) {
+			top.window.closeWindow();
+			top.window.subPage.loadCurrDatagrid();
+		});
+	}
+}
+function getParam() {
+	var param = {
+	    "id": ${model.id}, 
+       	    "model.name": getInputValue("name"), 
+       	    "model.phone": getInputValue("phone"), 
+       	    "model.cardnum": getInputValue("cardnum"), 
+       	    "model.cardcs": getInputValue("cardcs"), 
+       	    "model.chargenum": getInputValue("chargenum"), 
+       	    "model.money": getInputValue("money"), 
+       	    "model.total": getInputValue("total"), 
+       	    "model.jointime": getInputValue("jointime"), 
+	}
+	for(key in param) {
+		if(!param[key]) {
+			delete param[key];
+		}
+	}
+	return param;
+}
+
+//扩展js
+</script>
+<#include "/common/foot.html"/>

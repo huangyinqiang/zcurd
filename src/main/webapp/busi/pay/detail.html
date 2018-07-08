@@ -1,0 +1,110 @@
+<#include "/common/head.html"/>
+<div class="easyui-panel updatePage"
+	data-options="fit:true,border:false">
+	<form id="ff" class="easyui-form" method="post">
+		<table class="table1">
+			<tr>
+				<th><span>代理用户名称:</span></th>
+				<td>
+					<div class="wrap_input">
+						<input class="easyui-textbox" type="text" name="user" id="user"
+							value="${user!''}" data-options="fit: true" readonly="readonly"></input>
+						<input type="hidden" name="userid" id="userid"
+							value="${userId!''}" />
+					</div>
+				</td>
+
+			</tr>
+			<tr>
+				<th><span>代理OPENID:</span></th>
+				<td>
+					<div class="wrap_input">
+						<input class="easyui-textbox" type="text" name="openid"
+							id="openid" value="${openid!''}" data-options="fit: true"
+							readonly="readonly"></input>
+					</div>
+				</td>
+
+			</tr>
+			<tr>
+				<th><span>费用类型:</span></th>
+				<td>
+					<div class="wrap_input">
+						<input class="easyui-textbox" type="text" name="chargeType"
+							id="chargeType" value="${chargeType!''}" data-options="fit: true"
+							readonly="readonly"></input>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<th><span>转账费率:</span></th>
+				<td>
+					<div class="wrap_input">
+						<input class="easyui-textbox" type="text" name="rate" id="rate"
+							value="${rate!''}" data-options="fit: true" readonly="readonly"></input>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<th><span>总金额(元):</span></th>
+				<td>
+					<div class="wrap_input">
+						<input class="easyui-textbox" type="text" name="money" id="money"
+							value="${money!''}" data-options="fit: true" readonly="readonly"></input>
+					</div>
+				</td>
+
+			</tr>
+			<tr>
+				<th><span>统计时间:</span></th>
+				<td>
+					<div class="wrap_input">
+						<input class="easyui-textbox" type="text" name="time" id="time"
+							value="${time!''}" data-options="fit: true" readonly="readonly"></input>
+					</div>
+				</td>
+
+			</tr>
+			<!-- 
+			<tr style="dispay: none">
+				<th><span>付款记录:</span></th>
+				<td><span class="valueSpan">2017-10-10 支付1000</span></td>
+			</tr>
+			 -->
+			<tr>
+				<th colspan="2"><span>点击保存进行付款</span></th>
+			</tr>
+		</table>
+	</form>
+</div>
+<script>
+	top.window.subPage.save = save;
+	function save() {
+		if ($("#zcurdHeadTable").form('validate')) {
+			$.post("payfor", getParam(), function(data) {
+				top.window.closeWindow();
+				top.window.subPage.loadCurrDatagrid();
+			});
+		}
+	}
+	function getParam() {
+		var param = {
+			"model.type" : getInputValue("chargeType"),
+			"model.money" : getInputValue("money"),
+			"model.openid" : getInputValue("openid"),
+			"rate" : getInputValue("rate"),
+			"time" : getInputValue("time"),
+			"model.username" : getInputValue("user"),
+			"model.userid" : getInputValue("userid"),
+		}
+		for (key in param) {
+			if (!param[key]) {
+				delete param[key];
+			}
+		}
+		return param;
+	}
+
+	//扩展js
+</script>
+<#include "/common/foot.html"/>

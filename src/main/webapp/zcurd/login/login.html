@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>充电桩智慧管理平台</title>
+<script type="text/javascript">
+	var basePath = '${basePath}';
+	var noAuthBtn = '${noAuthBtn!}';
+	var authField = '${authField!}';
+</script>
+<link rel="stylesheet" type="text/css"
+	href="${basePath}/res/style2.0.css">
+<link rel="stylesheet" type="text/css" href="${basePath}/res/login.css">
+</head>
+<body>
+	<div class="tyg-div">
+		<ul>
+			<li>让</li>
+			<li><div style="margin-left: 20px;">智</div></li>
+			<li><div style="margin-left: 40px;">慧</div></li>
+			<li><div style="margin-left: 60px;">改</div></li>
+			<li><div style="margin-left: 80px;">变</div></li>
+			<li><div style="margin-left: 100px;">生</div></li>
+			<li><div style="margin-left: 120px;">活</div></li>
+		</ul>
+	</div>
+	<div id="contPar" class="contPar">
+		<div id="page1" style="z-index: 1; height: 951px;" class="cont_1">
+			<div class="title0">充电桩智慧管理平台</div>
+			<div class="title1">充电、交通、公共安全、大数据</div>
+			<div class="imgGroug">
+				<ul>
+					<img alt="" class="img0 png" src="${basePath}/res/page1_0.png">
+					<img alt="" class="img1 png" src="${basePath}/res/page1_1.png"
+						style="margin-left: -93.865px; margin-top: -87.865px;">
+					<img alt="" class="img2 png" src="${basePath}/res/page1_2.png"
+						style="margin-left: -93.865px; margin-top: -87.865px;">
+				</ul>
+			</div>
+			<img alt="" class="img3 png" src="${basePath}/res/page1_3.jpg"
+				style="margin-left: -315.54px; margin-top: -398.54px;">
+		</div>
+	</div>
+	<div class="tyg-div-denglv">
+		<div class="tyg-div-form">
+			<form id="ff" method="post" action="zcurdHead/main">
+				<h2>登录</h2>
+				<p class="tyg-p">欢迎访问 充电桩智慧管理平台</p>
+				<div style="margin: 5px 0px;">
+					<input type="text" name="user_name" id="user_name"
+						placeholder="请输入用户名...">
+				</div>
+				<div style="margin: 5px 0px;">
+					<input type="password" name="password" id="password"
+						placeholder="请输入密码...">
+				</div>
+				<div style="margin: 5px 0px;">
+					<input type="text" name="code" id="code" style="width: 150px;"
+						placeholder="请输入验证码..."> <img name="image" id="image"
+						src="${basePath}/login/image"
+						style="width: 105px; height: 32px; vertical-align: bottom;"
+						alt="验证码" onclick="randImage();">
+				</div>
+				<button type="button" onclick="login()">
+					登<span style="width: 20px;"></span>录
+				</button>
+			</form>
+		</div>
+	</div>
+	<script type="text/javascript"
+		src="${basePath}/res/jquery-1.8.0.min.js"></script>
+	<script type="text/javascript" src="${basePath}/res/com.js"></script>
+	<script type="text/javascript" src="${basePath}/res/login.js"></script>
+	<!--[if IE 6]>
+<script language="javascript" type="text/javascript" src="${basePath}/res/script/ie6_png.js"></script>
+<script language="javascript" type="text/javascript">
+DD_belatedPNG.fix(".png");
+</script>
+<![endif]-->
+</body>
+</html>

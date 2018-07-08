@@ -1,0 +1,75 @@
+
+<#include "/common/head.html"/>
+<script language="javascript" type="text/javascript">
+	rfidreader.onResult(function(resultdata) {
+				switch (resultdata.FunctionID) {
+				case 14:
+					break;
+				case 5:
+					if (resultdata.Result > 0) {
+						$("#cardcs").val(+resultdata.strData);
+					} else {
+						document.getElementById("cardcs").value = GetErrStr(resultdata.Result);
+					}
+					break;
+				case 6:
+					if (resultdata.Result > 0) {
+						closeDialog();
+					} else {
+						alert("充值失败，错误：" + GetErrStr(resultdata.Result));
+					}
+					break;
+				}
+			});
+	</script>
+
+ <div class="easyui-panel addPage" data-options="fit:true,border:false,novalidate:true">
+    <form class="easyui-form" id="ff" method="post" data-options="novalidate:true">
+        <table class="table1">
+            <tr>
+           		<th><span>秘钥名称:</span></th>
+               	<td>
+               		<div class="wrap_input"><input class="easyui-textbox" type="text" name="keyd" id="keyd" value="" data-options="fit: true"></input></div>
+           		</td>
+            <tr>
+           		<th><span>秘钥数值:</span></th>
+               	<td>
+               		<div class="wrap_input"><input class="easyui-textbox" type="text" name="value" id="value" value="" data-options="fit: true"></input></div>
+           		</td>
+            </tr>
+            <tr>
+           		<th><span>备注:</span></th>
+               	<td>
+               		<div class="wrap_input"><input class="easyui-textbox" type="text" name="remark" id="remark" value="" data-options="fit: true"></input></div>
+           		</td>
+            </tr>
+        </table>
+    </form>
+</div>
+<script>
+top.window.subPage.save = save;
+function save() {
+	if($("#ff").form('enableValidation').form('validate')) {
+		$.post("add", getParam(), function(data) {
+			top.window.closeWindow();
+			top.window.subPage.loadCurrDatagrid();
+		});
+	}
+}
+function getParam() {
+	var param = {
+       	    "model.key": $(":input[name='key']").val(), 
+       	    "model.value": $(":input[name='value']").val(), 
+       	    "model.remark": $(":input[name='remark']").val(), 
+	}
+	for(key in param) {
+		if(!param[key]) {
+			delete param[key];
+		}
+	}
+	return param;
+}
+
+//扩展js
+</script>
+<#include "/common/foot.html"/>
